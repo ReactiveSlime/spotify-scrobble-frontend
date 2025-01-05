@@ -1,0 +1,260 @@
+/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #121212; /* Dark background like Spotify */
+    color: #e0e0e0; /* Light text color */
+    line-height: 1.6;
+}
+
+/* Navigation Bar Styles (Shared Across Pages) */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #181818; /* Darker navbar */
+    padding: 15px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* Logo or Brand Name (If needed) */
+.navbar .logo {
+    font-size: 1.5rem;
+    color: #1db954;
+    font-weight: bold;
+}
+
+/* Default State for Nav Links */
+.navbar .nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.navbar a {
+    display: inline-block; /* Shrink to fit content */
+    color: #b3b3b3; /* Light gray text for links */
+    padding: 16px 25px;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.navbar a:hover {
+    color: #1db954; /* Spotify Green when hovered */
+}
+
+.navbar a.active {
+    border-bottom: 3px solid #1db954; /* Green accent on active link */
+    width: auto;
+    text-align: center;
+}
+
+/* Burger Menu Styles */
+.burger-menu {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.burger-menu div {
+    width: 30px;
+    height: 4px;
+    background-color: #b3b3b3;
+    border-radius: 5px;
+}
+
+/* Mobile Navbar - Hidden by Default */
+.navbar .nav-links.active {
+    display: block;
+    position: absolute;
+    top: 80px;
+    left: 0;
+    right: 0;
+    background-color: #181818;
+    padding: 20px;
+    text-align: left; /* Align text to the left */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.navbar .nav-links a {
+    padding: 10px;
+    display: block;
+}
+
+/* Main Content Styles */
+.main-content {
+    padding: 20px;
+    margin-top: 80px; /* Make space for sticky navbar */
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h1, h2 {
+    color: #fff; /* White text for headings */
+    font-weight: bold;
+}
+
+h1 {
+    font-size: 3rem;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+/* List Styles for Items (e.g., Songs, Artists) */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul li {
+    background-color: #1a1a1a; /* Dark background for list items */
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+ul li:hover {
+    background-color: #333333; /* Slightly lighter background on hover */
+}
+
+ul li strong {
+    font-weight: 600;
+}
+
+ul li .artist {
+    color: #b3b3b3; /* Lighter text for artist name */
+}
+
+/* Button Styles */
+button {
+    background-color: #1db954; /* Spotify Green */
+    color: #fff;
+    padding: 12px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #1ed760; /* Slightly lighter green on hover */
+}
+
+button:focus {
+    outline: none;
+}
+
+/* Section Titles */
+section {
+    margin-bottom: 30px;
+}
+
+section h2 {
+    margin-bottom: 10px;
+    font-size: 2rem;
+    color: #b3b3b3;
+}
+
+/* Flex container for Top Artists and Top Songs */
+.top-content {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; /* Space between sections */
+    margin-top: 20px;
+}
+
+.top-content > div {
+    flex: 1; /* Equal width for both sections */
+    background-color: #1a1a1a; /* Background for each section */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Section headings */
+.top-content h2 {
+    margin-bottom: 10px;
+    font-size: 1.8rem;
+    color: #fff;
+}
+
+/* List styles */
+.top-content ul {
+    list-style: none;
+    padding: 0;
+}
+
+.top-content li {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #2a2a2a;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.top-content li:hover {
+    background-color: #333333; /* Slightly lighter on hover */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px 20px;
+    }
+
+    .navbar .nav-links {
+        display: none;
+        width: 100%;
+    }
+
+    .navbar .burger-menu {
+        display: flex;
+    }
+
+    .navbar .nav-links.active {
+        display: block;
+    }
+
+    .navbar .nav-links a {
+        padding: 10px;
+        display: block;
+        width: 100%;
+        text-align: left; /* Align text to the left */
+    }
+
+    .main-content {
+        padding: 15px;
+    }
+
+    .top-content {
+        flex-direction: column;
+    }
+
+    .top-content > div {
+        margin-bottom: 20px; /* Add spacing between stacked sections */
+    }
+}
