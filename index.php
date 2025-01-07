@@ -59,7 +59,7 @@ $recentSongs = getRecentSongs($pdo);
 
         <!-- Navigation Links -->
         <div class="nav-links">
-            <?php renderNavbar("index2.php"); ?>
+            <?php renderNavbar("index.php"); ?>
         </div>
     </div>
 </header>
