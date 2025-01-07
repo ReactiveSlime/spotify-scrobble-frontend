@@ -218,6 +218,23 @@ section h2 {
     background-color: #333333; /* Slightly lighter on hover */
 }
 
+/* Style for the Spotify link */
+a.spotify-link {
+    color: #1db954; /* Spotify Green */
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+a.spotify-link:hover {
+    color: #1ed760; /* Slightly lighter green on hover */
+    text-decoration: underline;
+}
+
+a.spotify-link:focus {
+    outline: none;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .navbar {
@@ -257,4 +274,64 @@ section h2 {
     .top-content > div {
         margin-bottom: 20px; /* Add spacing between stacked sections */
     }
+}
+
+
+
+
+
+
+
+
+/* Search Form Styles */
+form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+form input[type="text"] {
+    padding: 8px;
+    font-size: 1rem;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form select {
+    padding: 8px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form button {
+    padding: 8px 15px;
+    font-size: 1rem;
+    background-color: #1db954;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #1ed760;
+}
+
+/* Results List */
+ul {
+    list-style-type: none;
+}
+
+ul li {
+    background-color: #1a1a1a;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+ul li strong {
+    color: #1db954;
 }

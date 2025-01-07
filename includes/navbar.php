@@ -6,9 +6,10 @@ ini_set('display_errors', 1);
 function renderNavbar($currentPage) {
     $pages = [
         "index.php" => "Home",
-        "recent_songs.php" => "Recent Songs",
+        "songs.php" => "Songs",
         "playtime_counts.php" => "Playtime And Counts",
         "top_five.php" => "Top Five",
+        "search.php" => "Search",
         "streaks.php" => "Streaks",
         "charts.php" => "Charts",
         /* Edit this to make the changes to the navbar 

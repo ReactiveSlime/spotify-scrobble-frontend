@@ -15,9 +15,10 @@ function convertToAEST($utcDateTime) {
     return $utc->format('jS \o\f F \a\t g:ia');
 }
 
+// Function to get recent songs with song URI
 function getRecentSongs($pdo, $limit = 5) {
     $stmt = $pdo->prepare(
-        "SELECT song, artist, played_at 
+        "SELECT song, artist, played_at, song_uri
          FROM playbacks
          ORDER BY played_at DESC
          LIMIT :limit"
@@ -27,9 +28,13 @@ function getRecentSongs($pdo, $limit = 5) {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+// Function to remove "spotify:track:" from the song_uri
+function formatSongUri($uri) {
+    return str_replace("spotify:track:", "", $uri);
+}
+
 $recentSongs = getRecentSongs($pdo);
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,10 +59,11 @@ $recentSongs = getRecentSongs($pdo);
 
         <!-- Navigation Links -->
         <div class="nav-links">
-            <?php renderNavbar("index.php"); ?>
+            <?php renderNavbar("index2.php"); ?>
         </div>
     </div>
 </header>
+
     <div class="main-content">
         <h1>Welcome to Your Music Dashboard</h1>
         <p>Explore your listening habits, top songs, streaks, and more!</p>
@@ -66,8 +72,10 @@ $recentSongs = getRecentSongs($pdo);
         <ul>
             <?php foreach ($recentSongs as $song): ?>
                 <li>
-                    <strong><?= htmlspecialchars($song['song']) ?></strong> by 
-                    <?= htmlspecialchars($song['artist']) ?> 
+                    <!-- Use the formatted song_uri -->
+                    <a href="https://open.spotify.com/track/<?= htmlspecialchars(formatSongUri($song['song_uri'])) ?>" target="_blank" class="spotify-link">
+                        <?= htmlspecialchars($song['song']) ?> by <?= htmlspecialchars($song['artist']) ?>
+                    </a>
                     (Played on: <?= convertToAEST($song['played_at']) ?>)
                 </li>
             <?php endforeach; ?>
@@ -75,6 +83,7 @@ $recentSongs = getRecentSongs($pdo);
 
         <p>Click on the navigation links above to explore other sections.</p>
     </div>
+
     <script src="./assets/js/script.js"></script>
 </body>
 </html>
