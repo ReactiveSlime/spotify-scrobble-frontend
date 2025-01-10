@@ -11,12 +11,13 @@ function renderNavbar($currentPage) {
         "top_five.php" => "Top Five",
         "search.php" => "Search",
         "streaks.php" => "Streaks",
+        "heatmap.php" => "Heatmap",
         "charts.php" => "Charts",
+        "github.php" => "links"
         /* Edit this to make the changes to the navbar 
            "filename.php" => "Page Name"
         */
         "template.php" => "Template",
-
     ];
     foreach ($pages as $page => $title) {
         $class = ($page === $currentPage) ? 'active' : '';

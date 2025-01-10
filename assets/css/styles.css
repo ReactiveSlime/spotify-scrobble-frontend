@@ -335,3 +335,69 @@ ul li {
 ul li strong {
     color: #1db954;
 }
+
+.heatmap-container {
+    display: grid;
+    grid-template-rows: auto repeat(7, 1fr);
+    grid-template-columns: auto repeat(24, 1fr);
+    gap: 2px;
+    margin: 20px auto;
+    max-width: 900px;
+    text-align: center;
+}
+
+.heatmap-item {
+    width: 100%;
+    padding-top: 100%; /* Square items */
+    position: relative;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+}
+
+.heatmap-item span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    font-weight: bold;
+    color: #e0e0e0;
+}
+
+.day-label, .hour-label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.hour-label {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+}
+
+.legend {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.color-scale {
+    display: flex;
+    justify-content: center;
+    margin: 10px auto;
+    max-width: 300px;
+}
+
+.color-scale div {
+    flex: 1;
+    height: 20px;
+}
+
+.day-hour-labels {
+    display: grid;
+    grid-template-rows: auto repeat(7, 1fr);
+    grid-template-columns: auto repeat(24, 1fr);
+}
+
+.day-hour-labels .day-label {
+    text-align: left;
+    padding-right: 10px;
+}
