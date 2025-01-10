@@ -13,22 +13,22 @@ function searchDatabase($pdo, $searchTerm, $searchType) {
     $sql = "";
     switch ($searchType) {
         case 'artist':
-            $sql = "SELECT * FROM playbacks WHERE artist LIKE :searchTerm"; 
+            $sql = "SELECT * FROM playbacks WHERE artist LIKE :searchTerm";
             break;
         case 'song':
-            $sql = "SELECT * FROM playbacks WHERE song LIKE :searchTerm"; 
+            $sql = "SELECT * FROM playbacks WHERE song LIKE :searchTerm";
             break;
         case 'album':
-            $sql = "SELECT * FROM playbacks WHERE album LIKE :searchTerm"; 
+            $sql = "SELECT * FROM playbacks WHERE album LIKE :searchTerm";
             break;
         case 'playlist':
-            $sql = "SELECT * FROM playbacks WHERE playlist_name LIKE :searchTerm"; 
+            $sql = "SELECT * FROM playbacks WHERE playlist_name LIKE :searchTerm";
             break;
         case 'device':
-            $sql = "SELECT * FROM playbacks WHERE playback_device LIKE :searchTerm"; 
+            $sql = "SELECT * FROM playbacks WHERE playback_device LIKE :searchTerm";
             break;
         case 'genre':
-            $sql = "SELECT * FROM playbacks WHERE genres LIKE :searchTerm"; 
+            $sql = "SELECT * FROM playbacks WHERE genres LIKE :searchTerm";
             break;
         default:
             return []; // If no valid search type, return empty
@@ -40,15 +40,30 @@ function searchDatabase($pdo, $searchTerm, $searchType) {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+// Function to calculate stats
+function calculateStats($results) {
+    $totalSongs = count($results);
+    $totalMinutes = 0;
+
+    foreach ($results as $result) {
+        $totalMinutes += (int)($result['seconds_played'] / 60);
+    }
+
+    return ['totalSongs' => $totalSongs, 'totalMinutes' => $totalMinutes];
+}
+
+
 $searchResults = [];
 $searchTerm = "";
 $searchType = "artist"; // Default search type
+$stats = ['totalSongs' => 0, 'totalMinutes' => 0];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $searchTerm = $_POST['searchTerm'];  // User input for the search term
     $searchType = $_POST['searchType'];  // 'artist', 'song', 'album', etc.
     $results = searchDatabase($pdo, $searchTerm, $searchType);
     $searchResults = $results; // Store the results to display
+    $stats = calculateStats($results);
 }
 ?>
 
@@ -59,50 +74,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Music</title>
     <link rel="stylesheet" href="./assets/css/styles.css">
-    <style>
-        /* Add some basic styles for consistent spacing */
-        .result-list {
-            list-style-type: none;
-            padding: 0;
-        }
-        .result-list li {
-            margin-bottom: 20px; /* Add space between each result */
-            padding: 10px;
-            border-bottom: 1px solid #ddd; /* Light gray line between results */
-        }
-        .result-list li strong {
-            display: inline-block;
-            width: 120px; /* Align the labels (e.g. "Song", "Artist") consistently */
-        }
-        .result-list li .data {
-            display: inline-block;
-            margin-left: 10px; /* Add space between label and data */
-        }
-        /* Add spacing around the form elements */
-        form {
-            margin-bottom: 30px;
-        }
-        form input, form select, form button {
-            margin-right: 10px;
-            padding: 10px;
-            font-size: 16px;
-        }
-    </style>
 </head>
 <body>
 <header>
     <div class="navbar">
-        <!-- Logo -->
         <div class="logo">My Music</div>
-
-        <!-- Burger Menu Icon -->
         <div class="burger-menu">
             <div></div>
             <div></div>
             <div></div>
         </div>
-
-        <!-- Navigation Links -->
         <div class="nav-links">
             <?php renderNavbar("search.php"); ?>
         </div>
@@ -117,6 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <input type="text" name="searchTerm" placeholder="Enter search term" value="<?= htmlspecialchars($searchTerm) ?>" required>
         <select name="searchType">
             <option value="artist" <?= ($searchType == "artist") ? "selected" : "" ?>>Artist</option>
+            <option value="song" <?= ($searchType == "song") ? "selected" : "" ?>>Song</option>
             <option value="album" <?= ($searchType == "album") ? "selected" : "" ?>>Album</option>
             <option value="playlist" <?= ($searchType == "playlist") ? "selected" : "" ?>>Playlist</option>
             <option value="device" <?= ($searchType == "device") ? "selected" : "" ?>>Playback Device</option>
@@ -125,15 +107,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <button type="submit">Search</button>
     </form>
 
+    <!-- Display Stats -->
+    <div class="stats">
+        Total Songs: <?= $stats['totalSongs'] ?> | Total Minutes: <?= $stats['totalMinutes'] ?>
+    </div>
+
     <h2>Results</h2>
     <ul class="result-list">
         <?php if (count($searchResults) > 0): ?>
             <?php foreach ($searchResults as $result): ?>
                 <li>
-                    <!-- Display relevant data depending on the search type -->
                     <?php if ($searchType == "artist"): ?>
-                        <strong>Song:</strong><span class="data"><?= htmlspecialchars($result['song']) ?></span> <br>
-                        <strong>Artist:</strong><span class="data"><?= htmlspecialchars($result['artist']) ?></span>
+                        <strong>Artist:</strong><span class="data"><?= htmlspecialchars($result['artist']) ?></span> <br>
+                        <strong>Song:</strong><span class="data"><?= htmlspecialchars($result['song']) ?></span>
                     <?php elseif ($searchType == "song"): ?>
                         <strong>Song:</strong><span class="data"><?= htmlspecialchars($result['song']) ?></span> <br>
                         <strong>Artist:</strong><span class="data"><?= htmlspecialchars($result['artist']) ?></span>
