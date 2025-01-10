@@ -9,12 +9,6 @@ $pdo = new PDO(
 );
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-function convertToAEST($utcDateTime) {
-    $utc = new DateTime($utcDateTime, new DateTimeZone('UTC'));
-    $utc->setTimezone(new DateTimeZone('Australia/Brisbane'));
-    return $utc->format('jS \o\f F \a\t g:ia');
-}
-
 // Function to get recent songs with song URI
 function getRecentSongs($pdo, $limit = 5) {
     $stmt = $pdo->prepare(
@@ -76,7 +70,7 @@ $recentSongs = getRecentSongs($pdo);
                     <a href="https://open.spotify.com/track/<?= htmlspecialchars(formatSongUri($song['song_uri'])) ?>" target="_blank" class="spotify-link">
                         <?= htmlspecialchars($song['song']) ?> by <?= htmlspecialchars($song['artist']) ?>
                     </a>
-                    (Played on: <?= convertToAEST($song['played_at']) ?>)
+                    (Played on: <?= convertToLocalTimeZone($song['played_at']) ?>)
                 </li>
             <?php endforeach; ?>
         </ul>

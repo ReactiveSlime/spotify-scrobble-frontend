@@ -10,13 +10,6 @@ $pdo = new PDO(
 );
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-// Function to convert UTC to AEST
-function convertToAEST($utcDateTime) {
-    $utc = new DateTime($utcDateTime, new DateTimeZone('UTC'));
-    $utc->setTimezone(new DateTimeZone('Australia/Brisbane'));
-    return $utc->format('jS \o\f F \a\t g:ia');
-}
-
 // Function to get filtered songs by date range
 function getFilteredSongs($pdo, $startDate, $endDate, $order = 'DESC') {
     $sql = "SELECT song, album, artist, played_at, song_uri
@@ -117,7 +110,7 @@ $songs = ($startDate === date('Y-m-d') && $endDate === date('Y-m-d'))
                 <a href="https://open.spotify.com/track/<?= htmlspecialchars(formatSongUri($song['song_uri'])) ?>" target="_blank" class="spotify-link">
                     <?= htmlspecialchars($song['song']) ?> by <?= htmlspecialchars($song['artist']) ?>
                 </a>
-                (Played on: <?= convertToAEST($song['played_at']) ?>)
+                (Played on: <?= convertToLocalTimeZone($song['played_at']) ?>)
             </li>
         <?php endforeach; ?>
     <?php else: ?>
