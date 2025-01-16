@@ -18,24 +18,14 @@ $pdo = new PDO(
 </head>
 <body>
 <header>
-<div class="navbar">
-    <!-- Optionally, you can add a logo or site name here -->
-    <div class="logo">My Music</div>
+    <div class="navbar">
+        <div class="menu">Menu</div>
 
-    <!-- Burger Menu Icon -->
-    <div class="burger-menu">
-        <div></div>
-        <div></div>
-        <div></div>
+        <div class="nav-links">
+            <?php renderNavbar("template.php"); ?>
+        </div>
     </div>
-
-    <!-- Navigation Links -->
-    <div class="nav-links">
-    <!-- change template.php to the name of this file-->
-    <?php renderNavbar("template.php"); ?>
-    </div>
-</div>
-    </header>
+</header>
     <div class="main-content">
     </div>
     <script src="./assets/js/script.js"></script>
