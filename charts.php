@@ -9,39 +9,68 @@ $pdo = new PDO(
 );
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-// Fetch Playback Device Usage (Pie Chart)
+// Default date range: Last 7 days
+$startDate = $_GET['start_date'] ?? date('Y-m-d', strtotime('-7 days'));
+$endDate = $_GET['end_date'] ?? date('Y-m-d');
+
+// Playback Device Usage (Pie Chart)
 $stmt = $pdo->prepare(
     "SELECT playback_device, COUNT(*) AS device_count
      FROM playbacks
-     WHERE played_at >= NOW() - INTERVAL 1 WEEK
+     WHERE played_at BETWEEN :start_date AND :end_date
      AND playback_device IS NOT NULL
      GROUP BY playback_device"
 );
-$stmt->execute();
+$stmt->execute(['start_date' => $startDate, 'end_date' => $endDate]);
 $deviceUsage = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Fetch Music Play Count by Hour (Column Chart)
+// Music Play Count by Hour (Column Chart)
 $stmt = $pdo->prepare(
     "SELECT HOUR(played_at) AS hour, COUNT(*) AS song_count
      FROM playbacks
-     WHERE played_at >= NOW() - INTERVAL 1 WEEK
+     WHERE played_at BETWEEN :start_date AND :end_date
      GROUP BY hour
      ORDER BY hour ASC"
 );
-$stmt->execute();
+$stmt->execute(['start_date' => $startDate, 'end_date' => $endDate]);
 $playCountByHour = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Fetch Playback Device by Hour (Column Chart)
+// Playback Device by Hour (Column Chart)
 $stmt = $pdo->prepare(
     "SELECT HOUR(played_at) AS hour, playback_device, SUM(seconds_played) / 60 AS total_minutes_played
      FROM playbacks
-     WHERE played_at >= NOW() - INTERVAL 1 WEEK
+     WHERE played_at BETWEEN :start_date AND :end_date
      AND playback_device IS NOT NULL
      GROUP BY hour, playback_device
      ORDER BY hour ASC"
 );
-$stmt->execute();
+$stmt->execute(['start_date' => $startDate, 'end_date' => $endDate]);
 $deviceByHour = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Most Played Artists (Bar Chart)
+$stmt = $pdo->prepare(
+    "SELECT artist, SUM(seconds_played) / 60 AS total_minutes
+     FROM playbacks
+     WHERE played_at BETWEEN :start_date AND :end_date
+     GROUP BY artist
+     ORDER BY total_minutes DESC
+     LIMIT 10"
+);
+$stmt->execute(['start_date' => $startDate, 'end_date' => $endDate]);
+$topArtists = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Top Genres (Pie Chart)
+$stmt = $pdo->prepare(
+    "SELECT genres, COUNT(*) AS genre_count
+     FROM playbacks
+     WHERE played_at BETWEEN :start_date AND :end_date
+     AND genres IS NOT NULL
+     GROUP BY genres
+     ORDER BY genre_count DESC
+     LIMIT 5"
+);
+$stmt->execute(['start_date' => $startDate, 'end_date' => $endDate]);
+$topGenres = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -54,23 +83,28 @@ $deviceByHour = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <header>
-        <div class="navbar">
-            <div class="logo">My Music</div>
-            <div class="burger-menu">
-                <div></div>
-                <div></div>
-                <div></div>
-            </div>
-            <div class="nav-links">
-                <?php renderNavbar("charts.php"); ?>
-            </div>
+<header>
+    <div class="navbar">
+        <div class="menu">Menu</div>
+        <div class="nav-links">
+            <?php renderNavbar("charts.php"); ?>
         </div>
-    </header>
+    </div>
+</header>
     
     <div class="main-content">
         <h1>Music Statistics Dashboard</h1>
-        <p>Displaying your music stats for device usage and listening times.</p>
+
+        <!-- Date Range Selection -->
+        <form method="GET" class="date-range-form">
+            <label for="start_date">Start Date:</label>
+            <input type="date" id="start_date" name="start_date" value="<?php echo htmlspecialchars($startDate); ?>" required>
+            <label for="end_date">End Date:</label>
+            <input type="date" id="end_date" name="end_date" value="<?php echo htmlspecialchars($endDate); ?>" required>
+            <button type="submit">Update</button>
+        </form>
+
+        <p>Displaying music stats from <?php echo htmlspecialchars($startDate); ?> to <?php echo htmlspecialchars($endDate); ?>.</p>
 
         <!-- Playback Device Usage (Pie Chart) -->
         <div class="chart-container">
@@ -87,111 +121,77 @@ $deviceByHour = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <canvas id="deviceByHourChart"></canvas>
         </div>
 
-        <script>
-            // Playback Device Usage (Pie Chart)
-            var deviceUsageCtx = document.getElementById('deviceUsageChart').getContext('2d');
-            var deviceUsageChart = new Chart(deviceUsageCtx, {
-                type: 'pie',
-                data: {
-                    labels: <?php echo json_encode(array_column($deviceUsage, 'playback_device')); ?>,
-                    datasets: [{
-                        data: <?php echo json_encode(array_column($deviceUsage, 'device_count')); ?>,
-                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
-                    }]
-                }
-            });
+        <!-- Most Played Artists (Bar Chart) -->
+        <div class="chart-container">
+            <canvas id="topArtistsChart"></canvas>
+        </div>
 
-            // Music Play Count by Hour (Column Chart)
-            var playCountByHourCtx = document.getElementById('playCountByHourChart').getContext('2d');
-            var playCountByHourChart = new Chart(playCountByHourCtx, {
-                type: 'bar',
-                data: {
-                    labels: <?php echo json_encode(array_column($playCountByHour, 'hour')); ?>,
-                    datasets: [{
-                        label: 'Songs Played',
-                        data: <?php echo json_encode(array_column($playCountByHour, 'song_count')); ?>,
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-            // Playback Device by Hour (Column Chart showing total minutes used per device)
-            var deviceByHourCtx = document.getElementById('deviceByHourChart').getContext('2d');
-            
-            // Group devices by hour for the chart
-            var deviceData = <?php echo json_encode($deviceByHour); ?>;
-            var hours = [];
-            var devices = {};
-            var datasets = [];
-
-            // Loop through the data and structure it
-            deviceData.forEach(function(row) {
-                var hour = row.hour;
-                var device = row.playback_device;
-                var minutesPlayed = row.total_minutes_played;
-
-                if (!hours.includes(hour)) {
-                    hours.push(hour);
-                }
-
-                if (!devices[device]) {
-                    devices[device] = new Array(24).fill(0); // Initialize an array for each device with 24 values (for 24 hours)
-                }
-
-                // Add the minutes played for this device in the corresponding hour
-                devices[device][hour] = minutesPlayed;
-            });
-
-            // Create the datasets for each device
-            for (var device in devices) {
-                datasets.push({
-                    label: device,
-                    data: devices[device],
-                    backgroundColor: '#FF6384',  // Change color for each device if needed
-                    borderColor: '#FF6384',
-                    borderWidth: 1
-                });
-            }
-
-            // Create the chart
-            var deviceByHourChart = new Chart(deviceByHourCtx, {
-                type: 'bar',
-                data: {
-                    labels: hours,  // Hours (0-23)
-                    datasets: datasets  // Datasets for each device
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Minutes Played'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Hour of Day'
-                            }
-                        }
-                    }
-                }
-            });
-        </script>
+        <!-- Top Genres (Pie Chart) -->
+        <div class="chart-container">
+            <canvas id="topGenresChart"></canvas>
+        </div>
     </div>
 
+    <script>
+        // Playback Device Usage (Pie Chart)
+        new Chart(document.getElementById('deviceUsageChart'), {
+            type: 'pie',
+            data: {
+                labels: <?php echo json_encode(array_column($deviceUsage, 'playback_device')); ?>,
+                datasets: [{
+                    data: <?php echo json_encode(array_column($deviceUsage, 'device_count')); ?>,
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
+                }]
+            }
+        });
+
+        // Music Play Count by Hour (Column Chart)
+        new Chart(document.getElementById('playCountByHourChart'), {
+            type: 'bar',
+            data: {
+                labels: <?php echo json_encode(array_column($playCountByHour, 'hour')); ?>,
+                datasets: [{
+                    label: 'Songs Played',
+                    data: <?php echo json_encode(array_column($playCountByHour, 'song_count')); ?>,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Most Played Artists (Bar Chart)
+        new Chart(document.getElementById('topArtistsChart'), {
+            type: 'bar',
+            data: {
+                labels: <?php echo json_encode(array_column($topArtists, 'artist_name')); ?>,
+                datasets: [{
+                    label: 'Minutes Played',
+                    data: <?php echo json_encode(array_column($topArtists, 'total_minutes')); ?>,
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 1
+                }]
+            }
+        });
+
+        // Top Genres (Pie Chart)
+        new Chart(document.getElementById('topGenresChart'), {
+            type: 'pie',
+            data: {
+                labels: <?php echo json_encode(array_column($topGenres, 'genre')); ?>,
+                datasets: [{
+                    data: <?php echo json_encode(array_column($topGenres, 'genre_count')); ?>,
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+                }]
+            }
+        });
+    </script>
     <script src="./assets/js/script.js"></script>
 </body>
 </html>
