@@ -78,18 +78,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
 <header>
     <div class="navbar">
-        <div class="logo">My Music</div>
-        <div class="burger-menu">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
+        <div class="menu">Menu</div>
+
         <div class="nav-links">
             <?php renderNavbar("search.php"); ?>
         </div>
     </div>
 </header>
-
 <div class="main-content">
     <h1>Search Music</h1>
 

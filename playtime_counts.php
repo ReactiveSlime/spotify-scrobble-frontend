@@ -54,20 +54,13 @@ $monthListeningStats = getListeningStats($pdo, '1 MONTH');
 <body>
 <header>
     <div class="navbar">
-        <div class="logo">My Music</div>
-
-        <div class="burger-menu">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
+        <div class="menu">Menu</div>
 
         <div class="nav-links">
             <?php renderNavbar("playtime_counts.php"); ?>
         </div>
     </div>
 </header>
-
 <div class="main-content">
     <section class="song-stats">
         <h1>Song Counts</h1>

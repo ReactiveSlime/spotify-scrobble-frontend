@@ -63,12 +63,8 @@ $songs = ($startDate === date('Y-m-d') && $endDate === date('Y-m-d'))
 <body>
 <header>
     <div class="navbar">
-        <div class="logo">My Music</div>
-        <div class="burger-menu">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
+        <div class="menu">Menu</div>
+
         <div class="nav-links">
             <?php renderNavbar("songs.php"); ?>
         </div>

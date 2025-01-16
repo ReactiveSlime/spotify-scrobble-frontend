@@ -132,31 +132,12 @@ $topArtists = getTopArtists($pdo, '1 WEEK');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Top Five</title>
     <link rel="stylesheet" href="./assets/css/styles.css">
-    <style>
-        .top-content {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-        .top-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 2rem;
-        }
-        .top-column {
-            flex: 1;
-        }
-    </style>
 </head>
 <body>
 <header>
     <div class="navbar">
-        <div class="logo">My Music</div>
-        <div class="burger-menu">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
+        <div class="menu">Menu</div>
+
         <div class="nav-links">
             <?php renderNavbar("top_five.php"); ?>
         </div>

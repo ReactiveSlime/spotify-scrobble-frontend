@@ -38,20 +38,10 @@ $recentSongs = getRecentSongs($pdo);
     <link rel="stylesheet" href="./assets/css/styles.css">
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <header>
+<header>
     <div class="navbar">
-        <!-- Logo -->
-        <div class="logo">My Music</div>
+        <div class="menu">Menu</div>
 
-        <!-- Burger Menu Icon -->
-        <div class="burger-menu">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-
-        <!-- Navigation Links -->
         <div class="nav-links">
             <?php renderNavbar("index.php"); ?>
         </div>
