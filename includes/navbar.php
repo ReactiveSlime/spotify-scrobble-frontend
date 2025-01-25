@@ -13,7 +13,7 @@ function renderNavbar($currentPage) {
         "streaks.php" => "Streaks",
         "heatmap.php" => "Heatmap",
         "charts.php" => "Charts",
-        "links.php" => "Links"
+        "links.php" => "Links",
         /* Edit this to make the changes to the navbar 
            "filename.php" => "Page Name"
         */
