@@ -35,10 +35,6 @@ function getRecentSongs($pdo, $limit, $order = 'DESC') {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function formatSongUri($uri) {
-    return str_replace("spotify:track:", "", $uri);
-}
-
 // Get the start and end dates from the form (default to today if not set)
 $startDate = isset($_GET['start_date']) ? $_GET['start_date'] : date('Y-m-d');
 $endDate = isset($_GET['end_date']) ? $_GET['end_date'] : date('Y-m-d');
@@ -103,7 +99,7 @@ $songs = ($startDate === date('Y-m-d') && $endDate === date('Y-m-d'))
         <?php foreach ($songs as $song): ?>
             <li>
                 <!-- Use the formatted song_uri -->
-                <a href="https://open.spotify.com/track/<?= htmlspecialchars(formatSongUri($song['song_uri'])) ?>" target="_blank" class="spotify-link">
+                <a href="./search.php?song=<?= htmlspecialchars(formatSongUri($song['song_uri'])) ?>" class="spotify-link">
                     <?= htmlspecialchars($song['song']) ?> by <?= htmlspecialchars($song['artist']) ?>
                 </a>
                 (Played on: <?= convertToLocalTimeZone($song['played_at']) ?>)

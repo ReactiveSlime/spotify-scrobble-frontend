@@ -8,23 +8,40 @@ $pdo = new PDO(
     DB_PASS
 );
 
-function getHeatmapData($pdo) {
-    $sql = "SELECT played_at, seconds_played FROM playbacks";
+function getHeatmapData($pdo, $startDate, $endDate) {
+    $sql = "SELECT played_at, seconds_played FROM playbacks WHERE played_at BETWEEN :startDate AND :endDate";
     $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':startDate', $startDate);
+    $stmt->bindValue(':endDate', $endDate);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-$heatmapData = getHeatmapData($pdo);
+// Default to the past week if no dates are selected
+$endDate = date('Y-m-d 23:59:59');
+$startDate = date('Y-m-d 00:00:00', strtotime('-7 days'));
+
+// Check for user-specified date range
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['start_date'], $_GET['end_date'])) {
+    $startDate = $_GET['start_date'] . ' 00:00:00';
+    $endDate = $_GET['end_date'] . ' 23:59:59';
+}
+
+$heatmapData = getHeatmapData($pdo, $startDate, $endDate);
 $grid = array_fill(0, 8, array_fill(0, 24, 0));
 
+$maxMinutes = 0;
+
 foreach ($heatmapData as $data) {
-    $localTime = convertToLocalTimeZone($data['played_at']);
-    $dateTime = DateTime::createFromFormat('jS \o\f F \a\t g:ia', $localTime);
-    $dayIndex = $dateTime->format('N');
-    $hour = (int)$dateTime->format('G');
-    $grid[$dayIndex][$hour] += $data['seconds_played'] / 60;
+    $localDateTime = convertToLocalTimeZoneNotFormated($data['played_at']); // Returns a DateTime object
+    $dayIndex = $localDateTime->format('N'); // Day of the week (1 for Monday, 7 for Sunday)
+    $hour = (int)$localDateTime->format('G'); // Hour of the day (0-23)
+    $minutesPlayed = $data['seconds_played'] / 60;
+
+    $grid[$dayIndex][$hour] += $minutesPlayed;
+    $maxMinutes = max($maxMinutes, $grid[$dayIndex][$hour]);
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -47,6 +64,16 @@ foreach ($heatmapData as $data) {
 </header>
 <div class="main-content">
     <h1>Minutes Listened Heatmap</h1>
+
+    <!-- Date Filter Form -->
+    <form method="GET" action="heatmap.php">
+        <label for="start_date">Start Date:</label>
+        <input type="date" id="start_date" name="start_date" value="<?= htmlspecialchars(substr($startDate, 0, 10)) ?>" required>
+        <label for="end_date">End Date:</label>
+        <input type="date" id="end_date" name="end_date" value="<?= htmlspecialchars(substr($endDate, 0, 10)) ?>" required>
+        <button type="submit">Filter</button>
+    </form>
+
     <div class="heatmap-container">
         <div></div>
         <?php for ($hour = 0; $hour < 24; $hour++): ?>
@@ -61,9 +88,10 @@ foreach ($heatmapData as $data) {
             <?php for ($hour = 0; $hour < 24; $hour++): ?>
                 <?php
                 $minutes = $grid[$dayIndex + 1][$hour];
-                $colorIntensity = min(255, round($minutes * 10));
+                // Calculate color intensity dynamically based on the maximum value
+                $colorIntensity = ($maxMinutes > 0) ? $minutes / $maxMinutes : 0;
                 ?>
-                <div class="heatmap-item" style="background-color: rgba(255, 0, 0, <?= $colorIntensity / 255 ?>);">
+                <div class="heatmap-item" style="background-color: rgba(255, 0, 0, <?= $colorIntensity ?>);">
                     <span><?= ($minutes > 0) ? round($minutes) : '' ?></span>
                 </div>
             <?php endfor; ?>
@@ -81,6 +109,7 @@ foreach ($heatmapData as $data) {
         <p>Low → High</p>
     </div>
 </div>
+
 <script src="./assets/js/script.js"></script>
 </body>
 </html>

@@ -22,11 +22,6 @@ function getRecentSongs($pdo, $limit = 5) {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Function to remove "spotify:track:" from the song_uri
-function formatSongUri($uri) {
-    return str_replace("spotify:track:", "", $uri);
-}
-
 $recentSongs = getRecentSongs($pdo);
 ?>
 <!DOCTYPE html>
@@ -57,7 +52,7 @@ $recentSongs = getRecentSongs($pdo);
             <?php foreach ($recentSongs as $song): ?>
                 <li>
                     <!-- Use the formatted song_uri -->
-                    <a href="https://open.spotify.com/track/<?= htmlspecialchars(formatSongUri($song['song_uri'])) ?>" target="_blank" class="spotify-link">
+                    <a href="./search.php?song=<?= htmlspecialchars(formatSongUri($song['song_uri'])) ?>" class="spotify-link">
                         <?= htmlspecialchars($song['song']) ?> by <?= htmlspecialchars($song['artist']) ?>
                     </a>
                     (Played on: <?= convertToLocalTimeZone($song['played_at']) ?>)

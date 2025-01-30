@@ -167,7 +167,7 @@ $topArtists = getTopArtists($pdo, '1 WEEK');
                 <ul>
                     <?php foreach ($topSongs as $song): ?>
                         <li>
-                            <a href="<?= spotifyUriToLink($song['song_uri']) ?>" class="spotify-link" target="_blank">
+                            <a href="./search.php?song=<?= formatsonguri($song['song_uri']) ?>" class="spotify-link">
                                 <?= htmlspecialchars($song['song']) ?>
                             </a>
                             (<?= ceil($song['minutes_listened']) ?> minutes)
@@ -184,7 +184,7 @@ $topArtists = getTopArtists($pdo, '1 WEEK');
             <?php foreach ($topPopularSongs as $song): ?>
                 <li>
                     <?php if (isset($song['song_uri'])): ?>
-                        <a href="<?= spotifyUriToLink($song['song_uri']) ?>" class="spotify-link" target="_blank">
+                        <a href="./search.php?song=<?= formatsonguri($song['song_uri']) ?>" class="spotify-link">
                             <?= htmlspecialchars($song['song']) ?>
                         </a>
                     <?php else: ?>
@@ -202,7 +202,7 @@ $topArtists = getTopArtists($pdo, '1 WEEK');
         <?php foreach ($topNicheSongs as $song): ?>
     <li>
         <?php if (isset($song['song_uri'])): ?>
-            <a href="<?= spotifyUriToLink($song['song_uri']) ?>" class="spotify-link" target="_blank">
+            <a href="./search.php?song=<?= formatsonguri($song['song_uri']) ?>" class="spotify-link">
                 <?= htmlspecialchars($song['song']) ?>
             </a>
         <?php else: ?>

@@ -1,18 +1,20 @@
-/* Reset some default styles */
+/* Reset default styles */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* Global Styles */
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #121212; /* Dark background like Spotify */
+    background-color: #121212; /* Dark background */
     color: #e0e0e0; /* Light text color */
     line-height: 1.6;
 }
 
-/* Navigation Bar Styles (Shared Across Pages) */
+/* Header & Navigation Bar */
+/* Navigation Bar Styles */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -24,85 +26,68 @@ body {
     z-index: 1000;
 }
 
-/* Logo or Brand Name (If needed) */
-.navbar .logo {
+.navbar .menu {
     font-size: 1.5rem;
     color: #1db954;
     font-weight: bold;
+    cursor: pointer;
 }
 
-/* Default State for Nav Links */
+.navbar .menu:hover {
+    color: #179445; /* Hover effect */
+}
+
+/* Adjusting the nav-links container */
 .navbar .nav-links {
-    display: flex;
-    gap: 20px;
+    display: none;
+    position: absolute;
+    top: 80px; /* Positioned below the navbar */
+    left: 0;
+    background-color: #181818;
+    padding: 20px;
+    text-align: left;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    width: auto; /* Adjust width based on content */
+    max-width: 100%; /* Prevents overflow */
 }
 
+/* Show the nav-links when active */
+.navbar .nav-links.active {
+    display: block; /* Display the nav-links when active */
+}
+
+/* Link styles */
 .navbar a {
-    display: inline-block; /* Shrink to fit content */
-    color: #b3b3b3; /* Light gray text for links */
+    display: block; /* Make each link a block element */
+    color: #b3b3b3;
     padding: 16px 25px;
     text-decoration: none;
     font-size: 18px;
     font-weight: 500;
-    transition: all 0.3s ease;
-    letter-spacing: 1px;
+    transition: color 0.3s ease;
     text-transform: uppercase;
 }
 
 .navbar a:hover {
-    color: #1db954; /* Spotify Green when hovered */
+    color: #1db954;
 }
 
 .navbar a.active {
-    border-bottom: 3px solid #1db954; /* Green accent on active link */
-    width: auto;
-    text-align: center;
+    border-bottom: 3px solid #1db954;
 }
 
-/* Burger Menu Styles */
-.burger-menu {
-    display: none;
-    flex-direction: column;
-    gap: 5px;
-    cursor: pointer;
-}
 
-.burger-menu div {
-    width: 30px;
-    height: 4px;
-    background-color: #b3b3b3;
-    border-radius: 5px;
-}
-
-/* Mobile Navbar - Hidden by Default */
-.navbar .nav-links.active {
-    display: block;
-    position: absolute;
-    top: 80px;
-    left: 0;
-    right: 0;
-    background-color: #181818;
-    padding: 20px;
-    text-align: left; /* Align text to the left */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
-}
-
-.navbar .nav-links a {
-    padding: 10px;
-    display: block;
-}
-
-/* Main Content Styles */
+/* Main Content */
 .main-content {
     padding: 20px;
-    margin-top: 80px; /* Make space for sticky navbar */
+    margin-top: 80px; /* Space for sticky navbar */
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
 }
 
 h1, h2 {
-    color: #fff; /* White text for headings */
+    color: #fff;
     font-weight: bold;
 }
 
@@ -117,14 +102,14 @@ h2 {
     margin-bottom: 15px;
 }
 
-/* List Styles for Items (e.g., Songs, Artists) */
+/* List Styles (Songs, Artists) */
 ul {
     list-style: none;
     padding: 0;
 }
 
 ul li {
-    background-color: #1a1a1a; /* Dark background for list items */
+    background-color: #1a1a1a;
     margin-bottom: 15px;
     padding: 15px;
     border-radius: 8px;
@@ -146,9 +131,22 @@ ul li .artist {
     color: #b3b3b3; /* Lighter text for artist name */
 }
 
+/* Link Styles */
+a.spotify-link {
+    color: #1db954;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+a.spotify-link:hover {
+    color: #1ed760;
+    text-decoration: underline;
+}
+
 /* Button Styles */
 button {
-    background-color: #1db954; /* Spotify Green */
+    background-color: #1db954;
     color: #fff;
     padding: 12px 20px;
     font-size: 1rem;
@@ -159,145 +157,76 @@ button {
 }
 
 button:hover {
-    background-color: #1ed760; /* Slightly lighter green on hover */
+    background-color: #1ed760;
 }
 
 button:focus {
     outline: none;
 }
 
-/* Section Titles */
-section {
-    margin-bottom: 30px;
-}
-
-section h2 {
-    margin-bottom: 10px;
-    font-size: 2rem;
-    color: #b3b3b3;
-}
-
-/* Flex container for Top Artists and Top Songs */
+/* Flexbox for Top Content */
 .top-content {
     display: flex;
     justify-content: space-between;
-    gap: 20px; /* Space between sections */
+    gap: 20px;
+    flex-direction: column;
     margin-top: 20px;
 }
 
 .top-content > div {
-    flex: 1; /* Equal width for both sections */
-    background-color: #1a1a1a; /* Background for each section */
+    flex: 1;
+    background-color: #1a1a1a;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-/* Section headings */
-.top-content h2 {
-    margin-bottom: 10px;
-    font-size: 1.8rem;
-    color: #fff;
+/* Top Row Flex Layout */
+.top-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
 }
 
-/* List styles */
-.top-content ul {
-    list-style: none;
-    padding: 0;
+.top-column {
+    flex: 1;
 }
 
-.top-content li {
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #2a2a2a;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
+/* Heatmap Layout (Untouched) */
+
+/* Color Scale for Heatmap */
+.color-scale {
+    display: flex;
+    justify-content: center;
+    margin: 10px auto;
+    max-width: 300px;
 }
 
-.top-content li:hover {
-    background-color: #333333; /* Slightly lighter on hover */
+.color-scale div {
+    flex: 1;
+    height: 20px;
 }
 
-/* Style for the Spotify link */
-a.spotify-link {
-    color: #1db954; /* Spotify Green */
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s ease;
+/* Label Grid for Heatmap */
+.day-hour-labels {
+    display: grid;
+    grid-template-columns: repeat(24, 1fr);
+    grid-template-rows: repeat(7, 1fr);
+}
+form
+.day-hour-labels .day-label {
+    text-align: left;
+    padding-right: 10px;
 }
 
-a.spotify-link:hover {
-    color: #1ed760; /* Slightly lighter green on hover */
-    text-decoration: underline;
-}
-
-a.spotify-link:focus {
-    outline: none;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 15px 20px;
-    }
-
-    .navbar .nav-links {
-        display: none;
-        width: 100%;
-    }
-
-    .navbar .burger-menu {
-        display: flex;
-    }
-
-    .navbar .nav-links.active {
-        display: block;
-    }
-
-    .navbar .nav-links a {
-        padding: 10px;
-        display: block;
-        width: 100%;
-        text-align: left; /* Align text to the left */
-    }
-
-    .main-content {
-        padding: 15px;
-    }
-
-    .top-content {
-        flex-direction: column;
-    }
-
-    .top-content > div {
-        margin-bottom: 20px; /* Add spacing between stacked sections */
-    }
-}
-
-
-
-
-
-
-
-
-/* Search Form Styles */
+/* Form Styles */
 form {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
 }
 
-form input[type="text"] {
-    padding: 8px;
-    font-size: 1rem;
-    width: 300px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
+form input[type="text"],
 form select {
     padding: 8px;
     font-size: 1rem;
@@ -320,22 +249,7 @@ form button:hover {
     background-color: #1ed760;
 }
 
-/* Results List */
-ul {
-    list-style-type: none;
-}
-
-ul li {
-    background-color: #1a1a1a;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-}
-
-ul li strong {
-    color: #1db954;
-}
-
+/* Heatmap Item */
 .heatmap-container {
     display: grid;
     grid-template-rows: auto repeat(7, 1fr);
@@ -379,25 +293,132 @@ ul li strong {
     margin: 20px 0;
 }
 
-.color-scale {
+/* Remove duplicate list styling */
+.top-content li {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #2a2a2a;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+ul li {
+    background-color: #1a1a1a;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+ul li strong {
+    color: #1db954;
+}
+
+/* List styles */
+.top-content ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul {
+    list-style-type: none;
+}
+
+/* Search Page */
+.song-details-container {
     display: flex;
-    justify-content: center;
-    margin: 10px auto;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+.album-cover {
     max-width: 300px;
+    margin-right: 20px;
 }
-
-.color-scale div {
+.song-info {
     flex: 1;
-    height: 20px;
 }
-
-.day-hour-labels {
-    display: grid;
-    grid-template-rows: auto repeat(7, 1fr);
-    grid-template-columns: auto repeat(24, 1fr);
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
 }
-
-.day-hour-labels .day-label {
+.info-table th, .info-table td {
+    padding: 10px;
     text-align: left;
-    padding-right: 10px;
+    border-bottom: 1px solid #ccc;
+}
+.spotify-link {
+    color: #1db954;
+    text-decoration: none;
+}
+.spotify-link:hover {
+    text-decoration: underline;
+}
+
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+}
+.calendar-day {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.calendar-day.active {
+    background-color: rgba(255, 0, 0, 0.2);
+}
+.date {
+    font-weight: bold;
+    font-size: 14px;
+}
+.count {
+    font-size: 12px;
+    color: #555;
+    margin-top: 5px;
+}
+.achievements ul {
+    list-style-type: none;
+    padding: 0;
+}
+.achievements li {
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    color: #fff;
+    text-align: center;
+}
+.achievements li.unlocked {
+    background-color: #1db954;
+}
+.achievements li.locked {
+    background-color: #f44336;
+}
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+}
+.calendar-day {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.calendar-day.active {
+    background-color: rgba(255, 0, 0, 0.2);
+}
+.date {
+    font-weight: bold;
+    font-size: 14px;
+}
+.count {
+    font-size: 12px;
+    color: #555;
+    margin-top: 5px;
 }
