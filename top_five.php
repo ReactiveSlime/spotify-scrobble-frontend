@@ -10,95 +10,129 @@ $pdo = new PDO(
 );
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-function getTopArtists($pdo, $interval, $limit = 5)
+function getTopArtists($pdo, $startDate, $endDate, $limit = 5)
 {
-    $validIntervals = ['1 DAY' => '1 DAY', '1 WEEK' => '1 WEEK', '1 MONTH' => '1 MONTH'];
-    if (!isset($validIntervals[$interval])) {
-        throw new InvalidArgumentException("Invalid interval: $interval");
+    $query = "SELECT artist_name, artist_uri, SUM(seconds_played) / 60 AS minutes_listened
+              FROM artists
+              WHERE artist_name IS NOT NULL 
+              AND TRIM(artist_name) != ''";
+    
+    $params = [];
+
+    if (!empty($startDate) && !empty($endDate)) {
+        $query .= " AND played_at BETWEEN :start_date AND :end_date";
+        $params[':start_date'] = $startDate . " 00:00:00";
+        $params[':end_date'] = $endDate . " 23:59:59";
     }
-    $stmt = $pdo->prepare(
-        "SELECT artist_name, artist_uri, SUM(seconds_played) / 60 AS minutes_listened
-         FROM artists
-         WHERE played_at >= NOW() - INTERVAL " . $validIntervals[$interval] . "
-         AND artist_name IS NOT NULL AND TRIM(artist_name) != ''
-         GROUP BY artist_name, artist_uri
-         ORDER BY minutes_listened DESC
-         LIMIT :limit"
-    );
+
+    $query .= " GROUP BY artist_name, artist_uri
+                ORDER BY minutes_listened DESC
+                LIMIT :limit";
+
+    $stmt = $pdo->prepare($query);
+    foreach ($params as $key => $value) {
+        $stmt->bindValue($key, $value);
+    }
     $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
     $stmt->execute();
+
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function getTopSongs($pdo, $interval, $limit = 5)
+function getTopSongs($pdo, $startDate, $endDate, $limit = 5)
 {
-    $validIntervals = ['1 DAY' => '1 DAY', '1 WEEK' => '1 WEEK', '1 MONTH' => '1 MONTH'];
-    if (!isset($validIntervals[$interval])) {
-        throw new InvalidArgumentException("Invalid interval: $interval");
+    $query = "SELECT song, song_uri, SUM(seconds_played) / 60 AS minutes_listened
+              FROM playbacks
+              WHERE 1=1";
+    
+    $params = [];
+
+    if (!empty($startDate) && !empty($endDate)) {
+        $query .= " AND played_at BETWEEN :start_date AND :end_date";
+        $params[':start_date'] = $startDate . " 00:00:00";
+        $params[':end_date'] = $endDate . " 23:59:59";
     }
-    $stmt = $pdo->prepare(
-        "SELECT song, song_uri, SUM(seconds_played) / 60 AS minutes_listened
-         FROM playbacks
-         WHERE played_at >= NOW() - INTERVAL " . $validIntervals[$interval] . "
-         GROUP BY song, song_uri
-         ORDER BY minutes_listened DESC
-         LIMIT :limit"
-    );
+
+    $query .= " GROUP BY song, song_uri
+                ORDER BY minutes_listened DESC
+                LIMIT :limit";
+
+    $stmt = $pdo->prepare($query);
+    foreach ($params as $key => $value) {
+        $stmt->bindValue($key, $value);
+    }
     $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
     $stmt->execute();
+
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function getTopPopularSongs($pdo, $interval, $limit = 5) {
-    $validIntervals = ['1 DAY' => '1 DAY', '1 WEEK' => '1 WEEK', '1 MONTH' => '1 MONTH'];
-    if (!isset($validIntervals[$interval])) {
-        throw new InvalidArgumentException("Invalid interval: $interval");
+function getTopPopularSongs($pdo, $startDate, $endDate, $limit = 5)
+{
+    $query = "SELECT song, song_uri, MAX(track_popularity) AS track_popularity, SUM(seconds_played) / 60 AS minutes_listened
+              FROM playbacks
+              WHERE song_uri IS NOT NULL";
+    
+    $params = [];
+
+    if (!empty($startDate) && !empty($endDate)) {
+        $query .= " AND played_at BETWEEN :start_date AND :end_date";
+        $params[':start_date'] = $startDate . " 00:00:00";
+        $params[':end_date'] = $endDate . " 23:59:59";
     }
 
-    // Modified query with song_uri in GROUP BY clause
-    $stmt = $pdo->prepare(
-        "SELECT song, song_uri, MAX(track_popularity) AS track_popularity, SUM(seconds_played) / 60 AS minutes_listened
-         FROM playbacks
-         WHERE played_at >= NOW() - INTERVAL " . $validIntervals[$interval] . "
-         AND song_uri IS NOT NULL
-         GROUP BY song, song_uri
-         ORDER BY track_popularity DESC
-         LIMIT :limit"
-    );
+    $query .= " GROUP BY song, song_uri
+                ORDER BY track_popularity DESC
+                LIMIT :limit";
+
+    $stmt = $pdo->prepare($query);
+    foreach ($params as $key => $value) {
+        $stmt->bindValue($key, $value);
+    }
     $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
     $stmt->execute();
+
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function getTopNicheSongs($pdo, $interval, $limit = 5) {
-    $validIntervals = ['1 DAY' => '1 DAY', '1 WEEK' => '1 WEEK', '1 MONTH' => '1 MONTH'];
-    if (!isset($validIntervals[$interval])) {
-        throw new InvalidArgumentException("Invalid interval: $interval");
+function getTopNicheSongs($pdo, $startDate, $endDate, $limit = 5)
+{
+    $query = "SELECT 
+                song, 
+                AVG(track_popularity) AS track_popularity,
+                (SELECT song_uri 
+                 FROM playbacks AS p2 
+                 WHERE p2.song = p1.song
+                 ORDER BY ABS(track_popularity - (SELECT AVG(track_popularity) FROM playbacks WHERE song = p1.song)) 
+                 LIMIT 1) AS song_uri,
+                SUM(seconds_played) / 60 AS minutes_listened
+              FROM playbacks AS p1
+              WHERE track_popularity > 0
+              AND track_popularity IS NOT NULL
+              AND song_uri IS NOT NULL";
+    
+    $params = [];
+
+    if (!empty($startDate) && !empty($endDate)) {
+        $query .= " AND played_at BETWEEN :start_date AND :end_date";
+        $params[':start_date'] = $startDate . " 00:00:00";
+        $params[':end_date'] = $endDate . " 23:59:59";
     }
 
-    $stmt = $pdo->prepare(
-        "SELECT 
-            song, 
-            AVG(track_popularity) AS track_popularity,
-            (SELECT song_uri 
-             FROM playbacks AS p2 
-             WHERE p2.song = p1.song
-             ORDER BY ABS(track_popularity - (SELECT AVG(track_popularity) FROM playbacks WHERE song = p1.song)) 
-             LIMIT 1) AS song_uri,
-            SUM(seconds_played) / 60 AS minutes_listened
-         FROM playbacks AS p1
-         WHERE played_at >= NOW() - INTERVAL " . $validIntervals[$interval] . "
-         AND track_popularity > 0
-         AND track_popularity IS NOT NULL
-         AND song_uri IS NOT NULL
-         GROUP BY song
-         ORDER BY track_popularity ASC
-         LIMIT :limit"
-    );
+    $query .= " GROUP BY song
+                ORDER BY track_popularity ASC
+                LIMIT :limit";
+
+    $stmt = $pdo->prepare($query);
+    foreach ($params as $key => $value) {
+        $stmt->bindValue($key, $value);
+    }
     $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
     $stmt->execute();
+
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
 
 function spotifyUriToLink($uri) {
     // Check if the URI is null or empty
@@ -118,11 +152,17 @@ function spotifyUriToLink($uri) {
     return '#';
 }
 
+$defaultStartDate = date('Y-m-d', strtotime('-365 days'));
+$defaultEndDate = date('Y-m-d');
 
-$topSongs = getTopSongs($pdo, '1 WEEK');
-$topPopularSongs = getTopPopularSongs($pdo, '1 WEEK');
-$topNicheSongs = getTopNicheSongs($pdo, '1 WEEK');
-$topArtists = getTopArtists($pdo, '1 WEEK');
+$startDate = isset($_GET['start_date']) && !empty($_GET['start_date']) ? $_GET['start_date'] : $defaultStartDate;
+$endDate = isset($_GET['end_date']) && !empty($_GET['end_date']) ? $_GET['end_date'] : $defaultEndDate;
+
+$topArtists = getTopArtists($pdo, $startDate, $endDate);
+$topSongs = getTopSongs($pdo, $startDate, $endDate);
+$topPopularSongs = getTopPopularSongs($pdo, $startDate, $endDate);
+$topNicheSongs = getTopNicheSongs($pdo, $startDate, $endDate);
+
 ?>
 
 <!DOCTYPE html>
@@ -131,7 +171,8 @@ $topArtists = getTopArtists($pdo, '1 WEEK');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Top Five</title>
-    <link rel="stylesheet" href="./assets/css/styles.css">
+    <link rel="stylesheet" href="./assets/css/top_five.css">
+    <link rel="stylesheet" href="./assets/css/navbar.css">
 </head>
 <body>
 <header>
@@ -145,6 +186,23 @@ $topArtists = getTopArtists($pdo, '1 WEEK');
 </header>
 
 <div class="main-content">
+
+    <!-- Filter Form -->
+    <form method="get" action="top_five.php" style="margin-bottom: 20px; display: flex; gap: 15px; align-items: center;">
+        <div>
+            <label for="start_date" style="color: #b3b3b3; font-weight: bold;">Start Date:</label>
+            <input type="date" id="start_date" name="start_date" value="<?= htmlspecialchars($startDate) ?>" class="date-input">
+        </div>
+        <div>
+            <label for="end_date" style="color: #b3b3b3; font-weight: bold;">End Date:</label>
+            <input type="date" id="end_date" name="end_date" value="<?= htmlspecialchars($endDate) ?>" class="date-input">
+        </div>
+        <button type="submit" class="btn-submit">Filter</button>
+        <!-- Reset Button -->
+        <button type="button" onclick="window.location.href='top_five.php';" class="btn-reset">Reset</button>
+    </form>
+
+
     <h1>Top Five</h1>
     <div class="top-content">
         <div class="top-row">
