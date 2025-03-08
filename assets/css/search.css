@@ -1,0 +1,126 @@
+/* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Global Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #121212; /* Dark background */
+    color: #e0e0e0; /* Light text color */
+    line-height: 1.6;
+}
+
+/* Main Content */
+.main-content {
+    padding: 20px;
+    margin-top: 80px; /* Space for sticky navbar */
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h1 {
+    color: #fff;
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+form div {
+    display: flex;
+    flex-direction: column;
+}
+
+form label {
+    color: #b3b3b3;
+    font-weight: bold;
+}
+
+form input[type="text"], form select {
+    padding: 8px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Link Styles */
+a.spotify-link {
+    color: #1db954;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+a.spotify-link:hover {
+    color: #1ed760;
+    text-decoration: underline;
+}
+
+button {
+    background-color: #1db954;
+    color: #fff;
+    padding: 12px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #1ed760;
+}
+
+button:focus {
+    outline: none;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul li {
+    background-color: #1a1a1a;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+ul li:hover {
+    background-color: #333333; /* Slightly lighter background on hover */
+}
+
+ul li a {
+    color: #1db954;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+ul li a:hover {
+    color: #1ed760;
+    text-decoration: underline;
+}
+
+ul li strong {
+    font-weight: 600;
+}
+
+ul li .artist {
+    color: #b3b3b3; /* Lighter text for artist name */
+}

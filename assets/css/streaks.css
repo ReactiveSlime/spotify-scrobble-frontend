@@ -1,0 +1,118 @@
+/* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Global Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #121212; /* Dark background */
+    color: #e0e0e0; /* Light text color */
+    line-height: 1.6;
+}
+
+/* Main Content */
+.main-content {
+    padding: 20px;
+    margin-top: 80px; /* Space for sticky navbar */
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h1, h2 {
+    color: #fff;
+    font-weight: bold;
+}
+
+h1 {
+    font-size: 3rem;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+/* List Styles (Streaks) */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul li {
+    background-color: #1a1a1a;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+ul li:hover {
+    background-color: #333333; /* Slightly lighter background on hover */
+}
+
+ul li strong {
+    font-weight: 600;
+}
+
+/* Achievements Section */
+.achievements ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.achievements li {
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    color: #fff;
+    text-align: center;
+}
+
+.achievements li.unlocked {
+    background-color: #1db954;
+}
+
+.achievements li.locked {
+    background-color: #f44336;
+}
+
+/* Calendar Layout */
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.calendar-day {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-day.active {
+    background-color: rgba(255, 0, 0, 0.2);
+}
+
+.date {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.count {
+    font-size: 12px;
+    color: #555;
+    margin-top: 5px;
+}

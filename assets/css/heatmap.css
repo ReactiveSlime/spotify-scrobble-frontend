@@ -1,0 +1,153 @@
+/* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Global Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #121212; /* Dark background */
+    color: #e0e0e0; /* Light text color */
+    line-height: 1.6;
+}
+
+/* Main Content */
+.main-content {
+    padding: 20px;
+    margin-top: 80px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h1 {
+    color: #fff;
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+h3 {
+    color: #fff;
+    font-size: 2rem;
+}
+
+/* Form Styles */
+form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+form input[type="date"] {
+    padding: 8px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form button {
+    padding: 8px 15px;
+    font-size: 1rem;
+    background-color: #1db954;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #1ed760;
+}
+
+/* Heatmap Container */
+.heatmap-container {
+    display: grid;
+    grid-template-columns: auto repeat(24, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    gap: 2px;
+    margin: 20px auto;
+    max-width: 900px;
+    text-align: center;
+}
+
+/* Heatmap Item */
+.heatmap-item {
+    width: 100%;
+    padding-top: 100%;
+    position: relative;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+}
+
+.heatmap-item span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    font-weight: bold;
+    color: #e0e0e0;
+}
+
+.hour-label, .day-label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.day-label {
+    grid-column: span 1;
+}
+
+.hour-label {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+}
+
+.legend {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.color-scale {
+    display: flex;
+    justify-content: center;
+    margin: 10px auto;
+    max-width: 300px;
+}
+
+.color-scale div {
+    flex: 1;
+    height: 20px;
+}
+
+/* Filter Form */
+form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+form input[type="date"] {
+    padding: 8px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form button {
+    padding: 8px 15px;
+    font-size: 1rem;
+    background-color: #1db954;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #1ed760;
+}

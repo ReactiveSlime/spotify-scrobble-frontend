@@ -1,0 +1,59 @@
+/* Header & Navigation Bar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #181818;
+    padding: 15px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar .menu {
+    font-size: 1.5rem;
+    color: #1db954;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.navbar .menu:hover {
+    color: #179445;
+}
+
+.navbar .nav-links {
+    display: none;
+    position: absolute;
+    top: 80px;
+    left: 0;
+    background-color: #181818;
+    padding: 20px;
+    text-align: left;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    width: auto;
+    max-width: 100%;
+}
+
+.navbar .nav-links.active {
+    display: block;
+}
+
+/* Link styles */
+.navbar a {
+    display: block;
+    color: #b3b3b3;
+    padding: 16px 25px;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    text-transform: uppercase;
+}
+
+.navbar a:hover {
+    color: #1db954;
+}
+
+.navbar a.active {
+    border-bottom: 3px solid #1db954;
+}

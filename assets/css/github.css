@@ -1,0 +1,85 @@
+/* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Global Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #121212; /* Dark background */
+    color: #e0e0e0; /* Light text color */
+    line-height: 1.6;
+}
+
+/* Main Content */
+.main-content {
+    padding: 20px;
+    margin-top: 80px; /* Space for sticky navbar */
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h1, h2 {
+    color: #fff;
+    font-weight: bold;
+}
+
+h1 {
+    font-size: 3rem;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+/* Button Styles */
+button {
+    background-color: #1db954;
+    color: #fff;
+    padding: 12px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #1ed760;
+}
+
+button:focus {
+    outline: none;
+}
+
+/* Section Styles for GitHub Links */
+section {
+    margin-bottom: 30px;
+}
+
+section h2 {
+    font-size: 1.8rem;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+section button {
+    background-color: #1db954;
+    color: #fff;
+    padding: 12px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+section button:hover {
+    background-color: #1ed760;
+}
